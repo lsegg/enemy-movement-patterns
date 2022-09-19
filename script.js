@@ -10,8 +10,13 @@ const ctx2 = canvas2.getContext("2d");
 const numberOfEnemies2 = 25;
 const enemies2 = [];
 
-CANVAS_WIDTH = canvas1.width = canvas2.width = 500;
-CANVAS_HEIGHT = canvas1.height = canvas2.height = 1000;
+const canvas3 = document.getElementById("canvas3");
+const ctx3 = canvas3.getContext("2d");
+const numberOfEnemies3 = 75;
+const enemies3 = [];
+
+CANVAS_WIDTH = canvas1.width = canvas2.width = canvas3.width = 500;
+CANVAS_HEIGHT = canvas1.height = canvas2.height = canvas3.height = 1000;
 
 let gameFrame = 0;
 class Enemy {
@@ -90,11 +95,53 @@ class WigglyEnemy extends Enemy {
   }
 }
 
+class SlidderingEnemy extends Enemy {
+  constructor(imageScr, spriteWidth, spriteHeight) {
+    super(imageScr, spriteWidth, spriteHeight);
+    this.speed = Math.random() * 3 + 1;
+    this.angle = Math.random() * 100;
+    this.angleSpeed = Math.random() * 1.5 + 0.5;
+  }
+  update() {
+    this.x =
+      (CANVAS_WIDTH / 2) * Math.sin((this.angle * Math.PI) / 90) +
+      CANVAS_WIDTH / 2 -
+      this.width / 2;
+    this.y =
+      (CANVAS_HEIGHT / 2) * Math.cos((this.angle * Math.PI) / 750) +
+      CANVAS_HEIGHT / 2 -
+      this.height / 2;
+    this.angle += this.angleSpeed;
+    if (this.x + this.width < 0) {
+      this.x = CANVAS_WIDTH;
+    }
+    if (gameFrame % this.flapSpeed === 0) {
+      this.frame > 4 ? (this.frame = 0) : this.frame++;
+    }
+  }
+  draw() {
+    ctx3.drawImage(
+      this.image,
+      this.frame * this.spriteWidth,
+      0,
+      this.spriteWidth,
+      this.spriteHeight,
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
+  }
+}
+
 for (let i = 0; i < numberOfEnemies1; i++) {
   enemies1.push(new FlappingEnemy("/assets/enemy1.png", 293, 155));
 }
 for (let i = 0; i < numberOfEnemies2; i++) {
   enemies2.push(new WigglyEnemy("/assets/enemy2.png", 266, 188));
+}
+for (let i = 0; i < numberOfEnemies3; i++) {
+  enemies3.push(new SlidderingEnemy("/assets/enemy3.png", 218, 177));
 }
 
 function animate() {
@@ -105,6 +152,11 @@ function animate() {
   });
   ctx2.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   enemies2.forEach((enemy) => {
+    enemy.update();
+    enemy.draw();
+  });
+  ctx3.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  enemies3.forEach((enemy) => {
     enemy.update();
     enemy.draw();
   });
