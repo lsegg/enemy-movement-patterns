@@ -10,6 +10,8 @@ This is the third project from the [JavaScript Game Development Course for Begin
 
 ## Preview 👁️
 
+![preview](https://github.com/lsegg/enemy-movement-patterns/blob/main/assets/preview.png?raw=true)
+
 ## Requirements ⚙️
 
 A text editor like [Visual Studio Code](https://code.visualstudio.com/) and a development local server such as [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).

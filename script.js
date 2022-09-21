@@ -15,8 +15,23 @@ const ctx3 = canvas3.getContext("2d");
 const numberOfEnemies3 = 75;
 const enemies3 = [];
 
-CANVAS_WIDTH = canvas1.width = canvas2.width = canvas3.width = 500;
-CANVAS_HEIGHT = canvas1.height = canvas2.height = canvas3.height = 1000;
+const canvas4 = document.getElementById("canvas4");
+const ctx4 = canvas4.getContext("2d");
+const numberOfEnemies4 = 20;
+const enemies4 = [];
+
+CANVAS_WIDTH =
+  canvas1.width =
+  canvas2.width =
+  canvas3.width =
+  canvas4.width =
+    500;
+CANVAS_HEIGHT =
+  canvas1.height =
+  canvas2.height =
+  canvas3.height =
+  canvas4.height =
+    1000;
 
 let gameFrame = 0;
 class Enemy {
@@ -134,6 +149,46 @@ class SlidderingEnemy extends Enemy {
   }
 }
 
+class SpinningEnemy extends Enemy {
+  constructor(imageScr, spriteWidth, spriteHeight) {
+    super(imageScr, spriteWidth, spriteHeight);
+    this.newX = Math.random() * (CANVAS_WIDTH - this.width);
+    this.newY = Math.random() * (CANVAS_HEIGHT - this.height);
+    this.interval = Math.floor(Math.random() * 200 + 50);
+  }
+  update() {
+    if (gameFrame % this.interval === 0) {
+      this.newX = Math.random() * (CANVAS_WIDTH - this.width);
+      this.newY = Math.random() * (CANVAS_HEIGHT - this.height);
+    }
+    let dx = this.x - this.newX;
+    let dy = this.y - this.newY;
+    this.x -= dx / 70;
+    this.y -= dy / 70;
+    // this.x = 0;
+    // this.y = 0;
+    if (this.x + this.width < 0) {
+      this.x = CANVAS_WIDTH;
+    }
+    if (gameFrame % this.flapSpeed === 0) {
+      this.frame > 4 ? (this.frame = 0) : this.frame++;
+    }
+  }
+  draw() {
+    ctx4.drawImage(
+      this.image,
+      this.frame * this.spriteWidth,
+      0,
+      this.spriteWidth,
+      this.spriteHeight,
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
+  }
+}
+
 for (let i = 0; i < numberOfEnemies1; i++) {
   enemies1.push(new FlappingEnemy("/assets/enemy1.png", 293, 155));
 }
@@ -142,6 +197,9 @@ for (let i = 0; i < numberOfEnemies2; i++) {
 }
 for (let i = 0; i < numberOfEnemies3; i++) {
   enemies3.push(new SlidderingEnemy("/assets/enemy3.png", 218, 177));
+}
+for (let i = 0; i < numberOfEnemies4; i++) {
+  enemies4.push(new SpinningEnemy("/assets/enemy4.png", 213, 213));
 }
 
 function animate() {
@@ -157,6 +215,11 @@ function animate() {
   });
   ctx3.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   enemies3.forEach((enemy) => {
+    enemy.update();
+    enemy.draw();
+  });
+  ctx4.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  enemies4.forEach((enemy) => {
     enemy.update();
     enemy.draw();
   });
